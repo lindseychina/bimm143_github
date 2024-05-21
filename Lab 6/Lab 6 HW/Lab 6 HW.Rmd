@@ -1,0 +1,55 @@
+---
+title: "Lab 6 HW"
+author: "Lindsey China (A17023629)"
+date: "2024-04-29"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, warning=FALSE}
+library(bio3d)
+df <- data.frame(a=1:10, b=seq(200,400,length=10),c=11:20,d=NA) 
+```
+
+```{r, warning=FALSE}
+# Can you improve this analysis code?
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+#s3.chainA <- trim.pdb(s1, chain="A", elety="CA")   Typo with "s1"
+s3.chainA <- trim.pdb(s3, chain="A", elety="CA") 
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+
+> Q6. How would you generalize the original code above to work with any set of input protein structures?
+
+protein_analysis() will read the input X (a protein code, ex. 4AKE) and identify the structure of the protein inputted. It will produce a line graph plotting the residues and Bfactors of the protein.
+
+```{r, warning=FALSE}
+protein_analysis <- function(x){
+  # Read the protein
+  sX <- read.pdb(x)
+  # Trim the data
+  sX.chainA <- trim.pdb(sX, chain="A", elety="CA")
+  # Specify into b
+  sX.b <- sX.chainA$atom$b
+  plotb3(sX.b, sse=sX.chainA,typ="l",ylab="Bfactor")
+}
+```
+
+Testing function:
+
+```{r, warning=FALSE}
+protein_analysis("4AKE")
+protein_analysis("1AKE")
+protein_analysis("1E4Y")
+```
+
