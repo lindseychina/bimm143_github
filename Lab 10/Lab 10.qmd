@@ -1,0 +1,275 @@
+---
+title: "Lab 10"
+author: "Lindsey China (A17023629)"
+toc: TRUE
+format: pdf
+---
+
+# Introduction to the RCSB Protein Data Bank (PDB)
+
+The PDB is the major repository of information about the 3D structures of large biological molecules, including proteins and nucleic acids. Understanding the shape of these molecules helps to understand how they work and deduce the role of structure in human health. The structures in PDB range from bits of DNA/RNA to complex machines of many chains of protein.
+
+We will use the main US based PDB website.
+
+## PDB Statistics
+
+> Q1. What percentage of structures in the PDB are solved by X-Ray and electron microscopy?
+
+```{r}
+184362/219140
+```
+
+84.13% of entries are solved with X-Ray
+
+```{r}
+20191/219140
+```
+
+9.21% of entries are solved with electron microscopy.
+
+> Q2. What proportion of structures in the PDB are protein?
+
+```{r}
+189750/219140
+```
+
+86.59% of structures are protein only.
+
+> Q3. Type HIV in the PDB website search box on the home page and determine how many HIV-1 protease structures are in the current PDB:
+
+There are 868 structures in the PDB for HIV-1 protease.
+
+## The PDB Format
+
+Download the "PDB File" fo the HIV-1 protease structure with the PDB identifier 1HSG.
+
+To view the contents in the Terminal, use `less ~/Downloads/1hsg.pdb`
+
+The file contains a list of all the atoms in the molecule with their positions defined by X, Y, and Z coordinates. Additional data such as secondary structure elements are commonly also included.
+
+# Visualizing the HIV-1 protease structure
+
+HIV-1 protease is vital for HIV replication, cleaving newly formed polypeptide chains to form functional proteins. Drugs that target this protein could be vital for suppressing viral replication. 
+
+In this section, we'll use the X-ray crystal structure with a bound drug (indinavir) and the Mol* molecular viewer to visually inspect the protein, binding site, and drug molecule. Then we will perform bioinformatics analysis of single and multiple crystallographic structures.
+
+Image of HIV-Pr
+
+![1HSG](1HSG.png)
+
+HIV-Pr with Asp25 featured
+
+![1HSG with Asp25](1HSG(1).png)
+
+## The important role of water
+
+> Q4. Water molecules normally have 3 atoms, why do we see just one atom per water molecule in this structure?
+
+A water molecule has 2 hydrogens and 1 oxygen, in this structure, hydrogens are not included since it would make the structure harder to see. Instead they include just the oxygen atom for each water molecule.
+
+> Q5. There is a critical "conserved" water molecule in the binding site, can you identify the molecule? What residue number does this molecule have?
+
+The conserved water molecule is at number 308.
+
+> Q6. Generate and save a figure clearly showing the two distinct chains of HIV-protease along with the ligan. You might also consider showing the catalytic residues ASP 25 in each chain and the critical water.
+
+![HIV-Pr](1HSG(2).png)
+
+# Introduction to Bio3D in R
+
+Bio3D is an R package for structural bioinformatics, including features to read, write, and analyze biomolecular structure, sequence, and dynamic trajectory data.
+
+```{r}
+library(bio3d)
+```
+
+## Reading the PDB file data into R
+
+```{r}
+pdb <- read.pdb("1hsg")
+pdb
+```
+
+> Q7. How many amino acid residues are in this pdb object?
+
+There are 198 amino acid residues
+
+> Q8. Name one of the two non-protein residues:
+
+HOH
+
+> Q9. How many protein chains are in this structure?
+
+There are 2 protein chains
+
+Note that the attributes of the object are listed at the end, to find the attributes of any such object use:
+
+```{r}
+attributes(pdb)
+```
+
+To access these individually use $ like R list objects. For example, to find the atom attribute:
+
+```{r}
+head(pdb$atom)
+```
+
+## Predicting functional motions of a single structure
+
+Let's read a new PDB structure, Adenylate Kinase, and perform Normal mode analysis (NMA).
+
+```{r}
+adk <- read.pdb("6s36")
+adk
+```
+
+NMA is a stuctural bioinformatic method to predict protein flexibility and potential functional motions.
+
+```{r}
+# Perform flexibility prediction
+
+m <- nma(adk)
+plot(m)
+```
+
+To view a "movie" of these motions we can generate a molecular "trajectory" with the `mktrj()` function.
+
+```{r}
+mktrj(m,file="adk_m7.pdb")
+```
+
+# Comparitive structure analysis of Adenylate Kinase
+
+In this section we'll perform PCA on the complete collection of Adenylate Kinase structures in PDB. This is a ubiquitous enzyme that functions to maintain equilibrium of cytoplasmic nucleotides. It catalyzes the transfer of a phosphoryl from ATP to AMP, which requires a rate limiting conformational transition. 
+
+The bio3d `pca()` function provides a convenient interface for PCA of structure data. It can be used to capture major variations in a set of structures, making interpretation of conformational states more clear. 
+
+## Overview
+
+Search the entire PDB for structures related to 1AKE, superpose identified structures, perform PCA, and calculate normal modes of each individual structure to probe for potential differences in structural flexibility. 
+
+## Setup
+
+Have bio3d, devtools, biocmanager, msa, and bitbucket downloaded.
+
+> Q10. Which of the packages above is found only on BioConductor and not CRAN?
+
+msa
+
+> Q11. Which of the above packages is not found on BioConduction or CRAN?
+
+bio3d-view
+
+> Q12. True or false: Functions from the devtools package can be used to install packages from GitHub and BitBucket.
+
+True
+
+## Search and retrieve ADK structures
+
+Perform a blast search of the PDB database to identify related structures to ADK. Use `get.seq()` to fetch ADK and  `blast.pdb()` to search. 
+
+```{r}
+library(bio3d)
+aa <- get.seq("1ake_A")
+aa
+```
+
+> Q13. How many amino acids are in this sequence?
+
+There are 214 amino acids
+
+Now use this as a query to BLAST search PDB:
+
+```{r}
+#b <- blast.pdb(aa)
+# Running the blast causes the pdf rendering to get stuck at this chunk for 5+ minutes
+```
+
+`plot.blast()` can be used to visualize and filter BLAST results by setting a seed position to the point of largest drop-off in normalized scores. Here we can specify only the relevant E. coli structures:
+
+```{r}
+# Plot a summary of search results
+#hits <- plot(b)
+```
+
+**I got the graph of the blast results to work in R studio, but it caused the PDF rendering to get stuck for 5+ min on these chunks so I've turned it into comments here.**
+
+```{r}
+# List out some "top hits":
+
+hits <- NULL
+hits$pdb.id <- c('1AKE_A','6S36_A','6RZE_A','3HPR_A','1E4V_A','5EJE_A','1E4Y_A','3X2S_A','6HAP_A','6HAM_A','4K46_A','3GMT_A','4PZL_A')
+
+head(hits$pdb.id)
+```
+
+Use `get.pdb()` and `pdbslit()` to fetch and parse identified structures:
+
+```{r}
+# Download related PDB files:
+
+files <- get.pdb(hits$pdb.id,path="pdbs",split=TRUE,gzip=TRUE)
+```
+
+# Align and superpose structures
+
+Next, use `pdbaln()` to align and optionally fit the identified PDB structures.
+
+```{r}
+#Align related PDBs:
+
+pdbs <- pdbaln(files,fit=TRUE,exefile="msa")
+
+# Vector containing PDB codes for figure axis:
+
+ids <- basename.pdb(pdbs$id)
+
+# Draw schematic alignment:
+
+#plot(pdbs, labels=ids)
+```
+
+**This graph also prevented R studio from rendering a PDF due to too large margins, here's an image of the graph it was creating for the html.**
+
+![Alignment Graph](Seq Alignment.png)
+
+## Annotate collected PDB structures
+
+`pdb.annotate()` provides a way to annotate the PDB file, use the function to annotate each structure to its source species:
+
+```{r}
+anno <- pdb.annotate(ids)
+unique(anno$source)
+```
+
+We can view all available annotation data:
+
+```{r}
+anno
+```
+
+## PCA
+
+Perform a PCA on the structure ensemble with `pca.xyz()` or `pca()`:
+
+```{r}
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
+
+`rmsd()` will calculate all pairwise RMSD values of the structural ensemble. This fascilitates clustering analysis based on the pairwise structural deviation:
+
+```{r}
+# Calculate RMSD
+
+rd <- rmsd(pdbs)
+
+# Structure-based clustering
+
+hc.rd <- hclust(dist(rd))
+grps.rd <- cutree(hc.rd,k=3)
+
+plot(pc.xray,1:2,col="grey50",bg=grps.rd,pch=21,cex=1)
+```
+
+This shows a conformer plot, representing the conformational variability between the ensemble of PDB structures. It projects their structures onto two selected PCs, displaying the inter-conformer relationship in terms of differences described by the selected PCs.
