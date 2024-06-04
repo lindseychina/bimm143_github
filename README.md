@@ -4,11 +4,11 @@ Classwork for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) at U
 
 - **Class 5** [Data Visualization with ggplot](Lab%205/Class5.md)
   
-- **Class 6** [R Functions](https://github.com/lindseychina/bimm143_github/blob/main/Lab%206/Lab%206.md)
+- **Class 6** [R Functions](Lab%206/Lab%206.md)
   
-- **Class 7** [Machine Learning 1](https://github.com/lindseychina/bimm143_github/blob/main/Lab%207/Lab%207.md)
+- **Class 7** [Machine Learning 1](Lab%207/Lab%207.md)
 
-- **Class 8** [PCA]()
+- **Class 8** [Something]()
   
 - **Class 9** [Something]()
   
