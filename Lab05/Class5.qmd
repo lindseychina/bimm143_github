@@ -1,0 +1,228 @@
+---
+title: "Class 5: Data Visualization with GGPLOT"
+author: "Lindsey China (PID: A17023629)"
+format: html
+toc: true
+---
+
+Today we will have our first play with the **ggplot2** package - one of the most popular graphics packages on the planet.
+
+There are many plotting sustems in R. These include so-called *"base"* plotting/graphics.
+
+```{r}
+plot(cars)
+```
+
+Distance to stop (feet) vs speed (mph)
+
+Base plot is generally rather short code and somewhat dull plots - but it is always there for you and is fast for big data sets. 
+
+If I want to use **ggplot2** it takes some more work.
+
+```{r}
+library(ggplot2)
+ggplot(cars)
+```
+
+I need to install the package first to my computer. To do this I can use the function `install.packages("ggplot2")`
+
+Every ggplot has at least 3 things:
+
+- **data** (the data.frame you with the data you want to plot)
+- **aes** (the aesthetic mapping of the data to the plot)
+- **geom** (how do you want the plot to look, points, lines, etc.)
+
+```{r}
+head(cars)
+```
+
+
+```{r}
+bp <- ggplot(cars)+
+  aes(x=speed, y=dist)+
+  geom_point()
+```
+
+**Changing to a linear model and removing the standard error shading:**
+
+```{r}
+ggplot(cars)+
+  aes(x=speed, y=dist)+
+  geom_point()+
+  geom_smooth(method = lm, se = FALSE)
+```
+
+**Adding in label annotations and changing the theme to black and white:**
+
+```{r}
+#Don't put a space after 'bp' will result in an error
+bp+geom_smooth(method = lm, se = FALSE)+
+  labs(title = "Stopping distance of old cars", 
+       x = "Speed (mph)", 
+       y = "Distance (ft)",
+       caption = "From the 'cars' data set") +
+  theme_bw()
+```
+
+## A more complicated scatter plot
+
+**Here we make a plot of gene expression data:**
+
+```{r}
+url <- "https://bioboot.github.io/bimm143_S20/class-material/up_down_expression.txt"
+genes <- read.delim(url)
+head(genes)
+# Number of genes in the data set:
+nrow(genes)
+# Name and number of the columns in the data set:
+colnames(genes)
+ncol(genes)
+# Number of genes in each state:
+table(genes$State)
+# Percent of total genes in each state:
+round(table(genes$State)/nrow(genes)*100,2)
+
+# Alternate method, just showing percent upregulated:
+n.gene <- nrow(genes)
+n.up <- sum(genes$State=="up")
+
+up.percent <- n.up/n.gene*100
+round(up.percent, 2)
+```
+
+**Graph the data set:**
+
+```{r}
+
+ggplot(genes)+
+  aes(x=Condition1, y=Condition2)+
+  geom_point()
+```
+
+**Mapping State column to point color:**
+
+```{r}
+p <- ggplot(genes)+
+  aes(x=Condition1, y=Condition2, col=State)+
+  geom_point()
+p
+```
+
+**Changing the colors in the graph:**
+
+```{r}
+p_color <- p+scale_color_manual(values=c("darkcyan","darkgray","darkred"))
+p_color
+```
+
+**Adding in labels:**
+
+```{r}
+p_color+labs(x="Control (No Drug",
+           y="Drug Treatment",
+           title="Gene Expression Changes Upon Drug Treatment")
+```
+
+## Exploring the gapminder dataset
+
+**Here we will load up the gapminder dataset**
+
+```{r}
+url <- "https://raw.githubusercontent.com/jennybc/gapminder/master/inst/extdata/gapminder.tsv"
+
+gapminder <- read.delim(url)
+```
+
+```{r}
+head(gapminder)
+```
+
+**Q. How many entry rows and columns are in this dataset?**
+
+```{r}
+nrow(gapminder)
+ncol(gapminder)
+
+# Or:
+dim(gapminder)
+```
+
+**Q. What years are included in the dataset?**
+
+```{r}
+table(gapminder$year)
+```
+
+
+**Q. How many continents are in the dataset?**
+
+```{r}
+# Table gives a count of how many entries fall under each continent:
+table(gapminder$continent)
+# Use the 'Unique' function to get just the name of each unique country in the dataset:
+unique(gapminder$continent)
+# Use 'length' to get number of continents instead of a list of names:
+length(unique(gapminder$continent))
+```
+
+**Q. How many countries are in the dataset?**
+
+```{r}
+length(unique(gapminder$country))
+```
+
+**Focus dataset on a single year (2007):**
+
+```{r}
+library(dplyr)
+
+gapminder_2007 <- gapminder %>% filter(year==2007)
+```
+
+**Create a graph for GDP vs life expectancy:**
+
+```{r}
+ggplot(gapminder_2007)+
+  aes(x=gdpPercap, y=lifeExp)+
+  geom_point(alpha=0.5, col="purple")+
+  labs(title="GDP Per Capita vs Life Expectancy in 2007")
+```
+
+**Adding more variables to the graph:**
+
+```{r}
+ggplot(gapminder_2007)+
+  aes(x=gdpPercap, y=lifeExp, color=continent, size=pop)+
+  geom_point(alpha=0.5)+
+  labs(title="GDP Per Capita vs Life Expectancy in 2007")
+```
+
+**Changing the size of the points:**
+
+```{r}
+ggplot(gapminder_2007) + 
+  geom_point(aes(x = gdpPercap, y = lifeExp,
+                 size = pop, color=continent), alpha=0.5) +
+  scale_size_area(max_size = 10)+
+  labs(title="GDP Per Capita vs Life Expectancy in 2007")
+```
+
+**Graphing the data from 1957:**
+
+```{r}
+gapminder_1957 <- gapminder %>% filter(year==1957)
+ggplot(gapminder_1957)+
+  geom_point(aes(x=gdpPercap, y=lifeExp, color=continent, size=pop), alpha=0.5)+
+  scale_size_area(max_size=10)+
+  labs(title="GDP Per Capita vs Life Expectancy in 1957")
+```
+
+**Facet command to display multiple graphs at once:**
+
+```{r}
+ggplot(gapminder)+
+  aes(x=gdpPercap, y=lifeExp)+
+  geom_point()+
+  facet_wrap(~continent)+
+  theme_bw()
+```
