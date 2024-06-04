@@ -1,6 +1,6 @@
 # Lindsey's Bionformatics Portfolio 
 
-Classwork for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) at UCSD.
+Classwork for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) at UC San Diego.
 
 - **Class 5** [Data Visualization with ggplot](Lab%205/Class5.md)
   
