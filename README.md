@@ -3,6 +3,7 @@
 Classwork for [BIMM143 Spring 2024](https://bioboot.github.io/bimm143_S24/) at UCSD.
 
 - **Class 5** [Data Visualization with ggplot](https://github.com/lindseychina/bimm143_github/blob/main/Lab%205/Class5.md)
+- [class 5](Lab 5/Class5.md)
   
 - **Class 6** [R Functions](https://github.com/lindseychina/bimm143_github/blob/main/Lab%206/Lab%206.md)
   
