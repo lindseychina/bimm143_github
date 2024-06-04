@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Lindsey China (A17023629)">
+
+<title>Lab 8</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Lab 8_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Lab 8_files/libs/quarto-html/quarto.js"></script>
+<script src="Lab 8_files/libs/quarto-html/popper.min.js"></script>
+<script src="Lab 8_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Lab 8_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Lab 8_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Lab 8_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Lab 8_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Lab 8_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Lab 8_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#importing-and-formatting-data" id="toc-importing-and-formatting-data" class="nav-link active" data-scroll-target="#importing-and-formatting-data">Importing and Formatting Data</a></li>
+  <li><a href="#pca-on-wisc.data" id="toc-pca-on-wisc.data" class="nav-link" data-scroll-target="#pca-on-wisc.data">PCA on wisc.data</a></li>
+  <li><a href="#interpreting-pca-results" id="toc-interpreting-pca-results" class="nav-link" data-scroll-target="#interpreting-pca-results">Interpreting PCA Results</a></li>
+  <li><a href="#variance-explained" id="toc-variance-explained" class="nav-link" data-scroll-target="#variance-explained">Variance Explained</a></li>
+  <li><a href="#communicating-pca-results" id="toc-communicating-pca-results" class="nav-link" data-scroll-target="#communicating-pca-results">Communicating PCA Results</a>
+  <ul class="collapse">
+  <li><a href="#hierarchical-clustering" id="toc-hierarchical-clustering" class="nav-link" data-scroll-target="#hierarchical-clustering">Hierarchical Clustering</a></li>
+  </ul></li>
+  <li><a href="#selecting-number-of-clusters" id="toc-selecting-number-of-clusters" class="nav-link" data-scroll-target="#selecting-number-of-clusters">Selecting number of clusters</a></li>
+  <li><a href="#using-different-methods" id="toc-using-different-methods" class="nav-link" data-scroll-target="#using-different-methods">Using different methods</a>
+  <ul class="collapse">
+  <li><a href="#k-means-clustering" id="toc-k-means-clustering" class="nav-link" data-scroll-target="#k-means-clustering">K-means clustering</a></li>
+  <li><a href="#combining-methods" id="toc-combining-methods" class="nav-link" data-scroll-target="#combining-methods">Combining Methods</a></li>
+  </ul></li>
+  <li><a href="#clustering-on-pca-results" id="toc-clustering-on-pca-results" class="nav-link" data-scroll-target="#clustering-on-pca-results">Clustering on PCA results</a>
+  <ul class="collapse">
+  <li><a href="#sensitivity-and-specificity" id="toc-sensitivity-and-specificity" class="nav-link" data-scroll-target="#sensitivity-and-specificity">Sensitivity and specificity</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction">Prediction</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab 8</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lindsey China (A17023629) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="importing-and-formatting-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-and-formatting-data">Importing and Formatting Data</h2>
+<p>Need to import the Wisconsin cancer data for this project, after loading it into the directory create a data frame to be used in the code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fna.data <span class="ot">&lt;-</span> <span class="st">"WisconsinCancer.csv"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>wisc.df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(fna.data, <span class="at">row.names=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wisc.df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         diagnosis radius_mean texture_mean perimeter_mean area_mean
+842302           M       17.99        10.38         122.80    1001.0
+842517           M       20.57        17.77         132.90    1326.0
+84300903         M       19.69        21.25         130.00    1203.0
+84348301         M       11.42        20.38          77.58     386.1
+84358402         M       20.29        14.34         135.10    1297.0
+843786           M       12.45        15.70          82.57     477.1
+         smoothness_mean compactness_mean concavity_mean concave.points_mean
+842302           0.11840          0.27760         0.3001             0.14710
+842517           0.08474          0.07864         0.0869             0.07017
+84300903         0.10960          0.15990         0.1974             0.12790
+84348301         0.14250          0.28390         0.2414             0.10520
+84358402         0.10030          0.13280         0.1980             0.10430
+843786           0.12780          0.17000         0.1578             0.08089
+         symmetry_mean fractal_dimension_mean radius_se texture_se perimeter_se
+842302          0.2419                0.07871    1.0950     0.9053        8.589
+842517          0.1812                0.05667    0.5435     0.7339        3.398
+84300903        0.2069                0.05999    0.7456     0.7869        4.585
+84348301        0.2597                0.09744    0.4956     1.1560        3.445
+84358402        0.1809                0.05883    0.7572     0.7813        5.438
+843786          0.2087                0.07613    0.3345     0.8902        2.217
+         area_se smoothness_se compactness_se concavity_se concave.points_se
+842302    153.40      0.006399        0.04904      0.05373           0.01587
+842517     74.08      0.005225        0.01308      0.01860           0.01340
+84300903   94.03      0.006150        0.04006      0.03832           0.02058
+84348301   27.23      0.009110        0.07458      0.05661           0.01867
+84358402   94.44      0.011490        0.02461      0.05688           0.01885
+843786     27.19      0.007510        0.03345      0.03672           0.01137
+         symmetry_se fractal_dimension_se radius_worst texture_worst
+842302       0.03003             0.006193        25.38         17.33
+842517       0.01389             0.003532        24.99         23.41
+84300903     0.02250             0.004571        23.57         25.53
+84348301     0.05963             0.009208        14.91         26.50
+84358402     0.01756             0.005115        22.54         16.67
+843786       0.02165             0.005082        15.47         23.75
+         perimeter_worst area_worst smoothness_worst compactness_worst
+842302            184.60     2019.0           0.1622            0.6656
+842517            158.80     1956.0           0.1238            0.1866
+84300903          152.50     1709.0           0.1444            0.4245
+84348301           98.87      567.7           0.2098            0.8663
+84358402          152.20     1575.0           0.1374            0.2050
+843786            103.40      741.6           0.1791            0.5249
+         concavity_worst concave.points_worst symmetry_worst
+842302            0.7119               0.2654         0.4601
+842517            0.2416               0.1860         0.2750
+84300903          0.4504               0.2430         0.3613
+84348301          0.6869               0.2575         0.6638
+84358402          0.4000               0.1625         0.2364
+843786            0.5355               0.1741         0.3985
+         fractal_dimension_worst
+842302                   0.11890
+842517                   0.08902
+84300903                 0.08758
+84348301                 0.17300
+84358402                 0.07678
+843786                   0.12440</code></pre>
+</div>
+</div>
+<p>The first column won’t be used here, it is a pathologist diagnosis and is basically the answer to if cells are malignant or benign. Reformat the dataset to remove the first column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wisc.data <span class="ot">&lt;-</span> wisc.df[,<span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Need to create a new vector, “Diagnosis”, with the data from the diagnosis column of the original set to check our results later:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To create a factor, need to use the tidyverse package</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the diagnosis levels/variables present in the list</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>diagnosis_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"B"</span>,<span class="st">"M"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the factor</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>diagnosis <span class="ot">&lt;-</span> <span class="fu">factor</span>(wisc.df<span class="sc">$</span>diagnosis, <span class="at">levels=</span>diagnosis_levels)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] M M M M M M
+Levels: B M</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q1. How many observations are in the dataset?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(wisc.df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 569  31</code></pre>
+</div>
+</div>
+<p>569 Observations of 31 variables</p>
+<blockquote class="blockquote">
+<p>Q2. How many of the observations have a malignant diagnosis?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.df<span class="sc">$</span>diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  B   M 
+357 212 </code></pre>
+</div>
+</div>
+<p>212 Observations are malignant</p>
+<blockquote class="blockquote">
+<p>Q3. How many variables/features in the data are suffixed with _mean?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>((<span class="fu">grep</span>(<span class="st">"_mean"</span>, <span class="fu">names</span>(wisc.df))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+<p>10 Variables contain _mean</p>
+</section>
+<section id="pca-on-wisc.data" class="level2">
+<h2 class="anchored" data-anchor-id="pca-on-wisc.data">PCA on wisc.data</h2>
+<p>To determine if data needs to be scaled, check the column means and standard deviation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colMeans</span>(wisc.data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            radius_mean            texture_mean          perimeter_mean 
+           1.412729e+01            1.928965e+01            9.196903e+01 
+              area_mean         smoothness_mean        compactness_mean 
+           6.548891e+02            9.636028e-02            1.043410e-01 
+         concavity_mean     concave.points_mean           symmetry_mean 
+           8.879932e-02            4.891915e-02            1.811619e-01 
+ fractal_dimension_mean               radius_se              texture_se 
+           6.279761e-02            4.051721e-01            1.216853e+00 
+           perimeter_se                 area_se           smoothness_se 
+           2.866059e+00            4.033708e+01            7.040979e-03 
+         compactness_se            concavity_se       concave.points_se 
+           2.547814e-02            3.189372e-02            1.179614e-02 
+            symmetry_se    fractal_dimension_se            radius_worst 
+           2.054230e-02            3.794904e-03            1.626919e+01 
+          texture_worst         perimeter_worst              area_worst 
+           2.567722e+01            1.072612e+02            8.805831e+02 
+       smoothness_worst       compactness_worst         concavity_worst 
+           1.323686e-01            2.542650e-01            2.721885e-01 
+   concave.points_worst          symmetry_worst fractal_dimension_worst 
+           1.146062e-01            2.900756e-01            8.394582e-02 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(wisc.data,<span class="dv">2</span>,sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            radius_mean            texture_mean          perimeter_mean 
+           3.524049e+00            4.301036e+00            2.429898e+01 
+              area_mean         smoothness_mean        compactness_mean 
+           3.519141e+02            1.406413e-02            5.281276e-02 
+         concavity_mean     concave.points_mean           symmetry_mean 
+           7.971981e-02            3.880284e-02            2.741428e-02 
+ fractal_dimension_mean               radius_se              texture_se 
+           7.060363e-03            2.773127e-01            5.516484e-01 
+           perimeter_se                 area_se           smoothness_se 
+           2.021855e+00            4.549101e+01            3.002518e-03 
+         compactness_se            concavity_se       concave.points_se 
+           1.790818e-02            3.018606e-02            6.170285e-03 
+            symmetry_se    fractal_dimension_se            radius_worst 
+           8.266372e-03            2.646071e-03            4.833242e+00 
+          texture_worst         perimeter_worst              area_worst 
+           6.146258e+00            3.360254e+01            5.693570e+02 
+       smoothness_worst       compactness_worst         concavity_worst 
+           2.283243e-02            1.573365e-01            2.086243e-01 
+   concave.points_worst          symmetry_worst fractal_dimension_worst 
+           6.573234e-02            6.186747e-02            1.806127e-02 </code></pre>
+</div>
+</div>
+<p>Execute the PCA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>wisc.pr <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(wisc.data, <span class="at">scale. =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wisc.pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Importance of components:
+                          PC1    PC2     PC3     PC4     PC5     PC6     PC7
+Standard deviation     3.6444 2.3857 1.67867 1.40735 1.28403 1.09880 0.82172
+Proportion of Variance 0.4427 0.1897 0.09393 0.06602 0.05496 0.04025 0.02251
+Cumulative Proportion  0.4427 0.6324 0.72636 0.79239 0.84734 0.88759 0.91010
+                           PC8    PC9    PC10   PC11    PC12    PC13    PC14
+Standard deviation     0.69037 0.6457 0.59219 0.5421 0.51104 0.49128 0.39624
+Proportion of Variance 0.01589 0.0139 0.01169 0.0098 0.00871 0.00805 0.00523
+Cumulative Proportion  0.92598 0.9399 0.95157 0.9614 0.97007 0.97812 0.98335
+                          PC15    PC16    PC17    PC18    PC19    PC20   PC21
+Standard deviation     0.30681 0.28260 0.24372 0.22939 0.22244 0.17652 0.1731
+Proportion of Variance 0.00314 0.00266 0.00198 0.00175 0.00165 0.00104 0.0010
+Cumulative Proportion  0.98649 0.98915 0.99113 0.99288 0.99453 0.99557 0.9966
+                          PC22    PC23   PC24    PC25    PC26    PC27    PC28
+Standard deviation     0.16565 0.15602 0.1344 0.12442 0.09043 0.08307 0.03987
+Proportion of Variance 0.00091 0.00081 0.0006 0.00052 0.00027 0.00023 0.00005
+Cumulative Proportion  0.99749 0.99830 0.9989 0.99942 0.99969 0.99992 0.99997
+                          PC29    PC30
+Standard deviation     0.02736 0.01153
+Proportion of Variance 0.00002 0.00000
+Cumulative Proportion  1.00000 1.00000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q4. From the results, what proportion of the original variance is captured by the first principal components (PC1)?</p>
+</blockquote>
+<p>44.27% of the variance is captured by PC1.</p>
+<blockquote class="blockquote">
+<p>Q5. How many principle components are required to describe at least 70% of the original variance in the data?</p>
+</blockquote>
+<p>3 PCs are required to capture 70% of the variance.</p>
+<blockquote class="blockquote">
+<p>Q6. How many principal components are required to describe at least 90% of the original variance in the data?</p>
+</blockquote>
+<p>7 PCs are required to capture 90% of the variance.</p>
+</section>
+<section id="interpreting-pca-results" class="level1">
+<h1>Interpreting PCA Results</h1>
+<p>Use a biplot to visualize the results of the PCA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">biplot</span>(wisc.pr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q7. What stands out about this plot? Is it easy to understand? Why?</p>
+</blockquote>
+<p>It is very difficult to understand, the data points are all on top of each other and it is difficult to see a pattern or meaning in the graph.</p>
+<p>Try a scatter plot colored by the first two PCAs:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.pr<span class="sc">$</span>x,<span class="at">col=</span>diagnosis,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"PC1"</span>,<span class="at">ylab=</span><span class="st">"PC2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can use ggplot2 to make an even better representation of this data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for ggplot to use</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(wisc.pr<span class="sc">$</span>x)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>diagnosis <span class="ot">&lt;-</span> diagnosis</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df)<span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(PC1, PC2, <span class="at">col=</span>diagnosis)<span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="variance-explained" class="level1">
+<h1>Variance Explained</h1>
+<p>Calculate the variance from the PCA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pr.var <span class="ot">&lt;-</span> wisc.pr<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pr.var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 13.281608  5.691355  2.817949  1.980640  1.648731  1.207357</code></pre>
+</div>
+</div>
+<p>Find the variance explained by each PC:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance explained by each principal component, stored as pve</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>pve <span class="ot">&lt;-</span> pr.var<span class="sc">/</span><span class="fu">sum</span>(pr.var)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pve</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pve, <span class="at">xlab=</span><span class="st">"Principal Component"</span>,<span class="at">ylab=</span><span class="st">"Proportion of Variance Explained"</span>,<span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),<span class="at">type=</span><span class="st">"o"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Alternative plot of the same data with a data driven y-axis:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(pve,<span class="at">ylab=</span><span class="st">"Percent of Variance Explained"</span>,<span class="at">names.arg=</span><span class="fu">paste0</span>(<span class="st">"PC"</span>,<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(pve)),<span class="at">las=</span><span class="dv">2</span>,<span class="at">axes=</span><span class="cn">FALSE</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>,<span class="at">at=</span>pve,<span class="at">labels=</span><span class="fu">round</span>(pve,<span class="dv">2</span>)<span class="sc">*</span><span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="communicating-pca-results" class="level1">
+<h1>Communicating PCA Results</h1>
+<blockquote class="blockquote">
+<p>Q9. For the first PC, what is the compenent of the loading vector for the feature concave.points_mean?</p>
+</blockquote>
+<p>-0.2608538</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wisc.pr<span class="sc">$</span>rotation[,<span class="dv">1</span>],<span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        radius_mean        texture_mean      perimeter_mean           area_mean 
+         -0.2189024          -0.1037246          -0.2275373          -0.2209950 
+    smoothness_mean    compactness_mean      concavity_mean concave.points_mean 
+         -0.1425897          -0.2392854          -0.2584005          -0.2608538 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q10. What is the minimum number of principal components required to explain 80% of the variance in the data?</p>
+</blockquote>
+<p>At least 5 PCs are required to explain 80% of the data</p>
+<section id="hierarchical-clustering" class="level2">
+<h2 class="anchored" data-anchor-id="hierarchical-clustering">Hierarchical Clustering</h2>
+<p>Scale the data to prepare it for hierarchical clustering:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>data.scaled <span class="ot">&lt;-</span> <span class="fu">scale</span>(wisc.data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Calculate the euclidean distance between all pairs of observations:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>data_dist <span class="ot">&lt;-</span> <span class="fu">dist</span>(data.scaled, <span class="at">method=</span><span class="st">"euclidean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Create a hierarchical clustering model using complete linkage, manually specify the method to hclust() and assign the results to wisc.hclust:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>wisc.hclust <span class="ot">&lt;-</span> <span class="fu">hclust</span>(data_dist, <span class="at">method=</span><span class="st">"complete"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p>Q11. Using the plot() and abline() function, what is the height at which the clustering model has 4 clusters?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.hclust)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">19</span>, <span class="at">col=</span><span class="st">"red"</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>At a height of 19 the clustering model is broken up into 4 clusters.</p>
+</section>
+</section>
+<section id="selecting-number-of-clusters" class="level1">
+<h1>Selecting number of clusters</h1>
+<p>Here we’ll compare the outputs of hierarchical clustering with the actual diagnoses. Because we have it in the dataset we can check the performance of our clustering model.</p>
+<p>Use cutree() to cut the tree into 4 clusters, assign to wisc.hclust.clusters:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>wisc.hclust.clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.hclust, <span class="at">h=</span><span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Use the table function to compare to the actual diagnoses:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust.clusters, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    diagnosis
+wisc.hclust.clusters   B   M
+                   1  12 165
+                   2   2   5
+                   3 343  40
+                   4   0   2</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q12. Can you find a better cluster vs diagnoses match by cutting into a different number of clusters between 2 and 10?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2 Clusters:</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>wisc.hclust_2 <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.hclust, <span class="at">h=</span><span class="dv">25</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust_2, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             diagnosis
+wisc.hclust_2   B   M
+            1 357 210
+            2   0   2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3 Clusters:</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>wisc.hclust_3 <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.hclust, <span class="at">h=</span><span class="dv">22</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust_3, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             diagnosis
+wisc.hclust_3   B   M
+            1 355 205
+            2   2   5
+            3   0   2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5 Clusters:</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>wisc.hclust_5 <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.hclust, <span class="at">h=</span><span class="dv">18</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust_5, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             diagnosis
+wisc.hclust_5   B   M
+            1  12 165
+            2   0   5
+            3 343  40
+            4   2   0
+            5   0   2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 10 Clusters:</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>wisc.hclust_10 <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.hclust, <span class="at">h=</span><span class="dv">13</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust_10, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              diagnosis
+wisc.hclust_10   B   M
+            1   12  86
+            2    0  59
+            3    0   3
+            4  331  39
+            5    0  20
+            6    2   0
+            7   12   0
+            8    0   2
+            9    0   2
+            10   0   1</code></pre>
+</div>
+</div>
+<p>Cutting into two or three clusters gives one cluster containing most of the results, with the other clusters only containing a few values. Increasing above four clusters causes you to start to lose the defined clusters containing either the majority of the B or M values.</p>
+</section>
+<section id="using-different-methods" class="level1">
+<h1>Using different methods</h1>
+<p>There are different <em>“methods”</em> we can use to combine points during hierarchical clustering procedures. These include “single”, “complete”, “average”, and “ward.D2”.</p>
+<blockquote class="blockquote">
+<p>Q13. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>wisc.hclust_single <span class="ot">&lt;-</span> <span class="fu">hclust</span>(data_dist, <span class="at">method=</span><span class="st">"single"</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.hclust_single)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>wisc.hclust_average <span class="ot">&lt;-</span> <span class="fu">hclust</span>(data_dist, <span class="at">method=</span><span class="st">"average"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.hclust_average)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-24-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>wisc.hclust_w.D2 <span class="ot">&lt;-</span> <span class="fu">hclust</span>(data_dist, <span class="at">method=</span><span class="st">"ward.D2"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.hclust_w.D2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-24-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I like the ward.D2 combination, it leaves all of the individual values on the same level of clusters which I think makes the data look more clean.</p>
+<section id="k-means-clustering" class="level2">
+<h2 class="anchored" data-anchor-id="k-means-clustering">K-means clustering</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>wisc.km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(wisc.data, <span class="at">centers =</span> <span class="dv">2</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.km<span class="sc">$</span>cluster, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   diagnosis
+      B   M
+  1 356  82
+  2   1 130</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q14. How well does k-means separate the two diagnoses? How does it compare to hclust()?</p>
+</blockquote>
+<p>It separates the benign diagnoses incredibly well, with only 1 ending up in a separate cluster. You lose a lot of data for the malignant diagnoses though. It is both better and worse compared to the hclust() model depending on how you look at it.</p>
+<p>Use table() to compare k-means clusters with hierarchical clusters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust.clusters, wisc.km<span class="sc">$</span>cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    
+wisc.hclust.clusters   1   2
+                   1  68 109
+                   2   5   2
+                   3 365  18
+                   4   0   2</code></pre>
+</div>
+</div>
+</section>
+<section id="combining-methods" class="level2">
+<h2 class="anchored" data-anchor-id="combining-methods">Combining Methods</h2>
+</section>
+</section>
+<section id="clustering-on-pca-results" class="level1">
+<h1>Clustering on PCA results</h1>
+<p>Recall that the PCA required significantly fewer features to describe 70%, 80%, and 95% of the variability. PCA other has other benefits like normalizing data, avoiding over-fitting, and uncorrelating variables. Let’s see if PCA improves or degrades the performance of hierarchical clustering.</p>
+<p>Create a hierarchical clustering model using ward.D2 linkage to describe at least 90% of variability.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pr_dist <span class="ot">&lt;-</span> <span class="fu">dist</span>(wisc.pr<span class="sc">$</span>x[,<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>])</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pr.hclust <span class="ot">&lt;-</span> <span class="fu">hclust</span>(pr_dist, <span class="at">method=</span><span class="st">"ward.D2"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pr.hclust)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This doesn’t look anymore promising than our previous clustering models. Are the two main groups here malignant and benign?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>grps <span class="ot">&lt;-</span> <span class="fu">cutree</span>(pr.hclust, <span class="at">k=</span><span class="dv">2</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(grps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>grps
+  1   2 
+216 353 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(grps, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    diagnosis
+grps   B   M
+   1  28 188
+   2 329  24</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.pr<span class="sc">$</span>x, <span class="at">col=</span>grps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Or:</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.pr<span class="sc">$</span>x[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">col=</span>diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Use the distance along the first 7 PCs for clustering:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>wisc.pr.hclust <span class="ot">&lt;-</span> <span class="fu">hclust</span>(pr_dist, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Cut this model into 2 clusters:</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>wisc.pr.hclust.clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(wisc.pr.hclust, <span class="at">k=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using table() compare the results of the new hierarchical model with the actual diagnoses.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.pr.hclust.clusters, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       diagnosis
+wisc.pr.hclust.clusters   B   M
+                      1  28 188
+                      2 329  24</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q15. How well does the newly created model with four clusters separate the two diagnoses?</p>
+</blockquote>
+<p>It works the same as the previous “grps” method. Still better than the original models done with the “complete”.</p>
+<blockquote class="blockquote">
+<p>Q16. How well do the k-means and hierarchical clustering models do in terms of separating diagnoses? Use table() to compare the output of each model.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.km<span class="sc">$</span>cluster, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   diagnosis
+      B   M
+  1 356  82
+  2   1 130</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wisc.hclust.clusters, diagnosis)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    diagnosis
+wisc.hclust.clusters   B   M
+                   1  12 165
+                   2   2   5
+                   3 343  40
+                   4   0   2</code></pre>
+</div>
+</div>
+<p>Both seem to struggle to really separate the benign diagnoses, though the hclust() model does a slightly better job at this. Even then the hclust() model does not have as good of a separation for benign diagnoses compared to the kmeans. Both have benefits and consequences.</p>
+<section id="sensitivity-and-specificity" class="level2">
+<h2 class="anchored" data-anchor-id="sensitivity-and-specificity">Sensitivity and specificity</h2>
+<p>Sensitivity: a test’s ability to correctly detect ill patients with the condition. In this case, the number of samples in the cluster identified as predominantly malignant divided by the total number of know malignant samples (TP/(TP+FN))</p>
+<p>Specificity: a test’s ability to correctly reject healthy patients. In this case, the proportion of benign samples in the cluster identified as predominantly benign that are known to be benign (TN/(TN+FN))</p>
+<blockquote class="blockquote">
+<p>Q17. Which of your analysis procedures resulted in a clustering model with the best specificity? Sensitivity?</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kmean sensitivity and specificity</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">130</span><span class="sc">/</span><span class="dv">212</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6132075</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">356</span><span class="sc">/</span><span class="dv">357</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9971989</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hclust sensitivity and specificity</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">165</span><span class="sc">/</span><span class="dv">212</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7783019</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">343</span><span class="sc">/</span><span class="dv">357</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9607843</code></pre>
+</div>
+</div>
+<p>K-means produced the more specific but less sensitive model compared to hclust.</p>
+</section>
+<section id="prediction" class="level2">
+<h2 class="anchored" data-anchor-id="prediction">Prediction</h2>
+<p>We’ll use predict() function that will take our PCA model from before and new cancer cell data and project that data onto our PCA space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://tinyurl.com/new-samples-CSV"</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>new <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>npc <span class="ot">&lt;-</span> <span class="fu">predict</span>(wisc.pr, <span class="at">newdata=</span>new)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(npc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           PC1       PC2        PC3        PC4       PC5        PC6        PC7
+[1,]  2.576616 -3.135913  1.3990492 -0.7631950  2.781648 -0.8150185 -0.3959098
+[2,] -4.754928 -3.009033 -0.1660946 -0.6052952 -1.140698 -1.2189945  0.8193031
+            PC8       PC9       PC10      PC11      PC12      PC13     PC14
+[1,] -0.2307350 0.1029569 -0.9272861 0.3411457  0.375921 0.1610764 1.187882
+[2,] -0.3307423 0.5281896 -0.4855301 0.7173233 -1.185917 0.5893856 0.303029
+          PC15       PC16        PC17        PC18        PC19       PC20
+[1,] 0.3216974 -0.1743616 -0.07875393 -0.11207028 -0.08802955 -0.2495216
+[2,] 0.1299153  0.1448061 -0.40509706  0.06565549  0.25591230 -0.4289500
+           PC21       PC22       PC23       PC24        PC25         PC26
+[1,]  0.1228233 0.09358453 0.08347651  0.1223396  0.02124121  0.078884581
+[2,] -0.1224776 0.01732146 0.06316631 -0.2338618 -0.20755948 -0.009833238
+             PC27        PC28         PC29         PC30
+[1,]  0.220199544 -0.02946023 -0.015620933  0.005269029
+[2,] -0.001134152  0.09638361  0.002795349 -0.019015820</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wisc.pr<span class="sc">$</span>x[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="at">col=</span>grps)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(npc[,<span class="dv">1</span>], npc[,<span class="dv">2</span>], <span class="at">col=</span><span class="st">"blue"</span>, <span class="at">pch=</span><span class="dv">16</span>, <span class="at">cex=</span><span class="dv">3</span>)</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(npc[,<span class="dv">1</span>], npc[,<span class="dv">2</span>], <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>), <span class="at">col =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Lab-8_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Q18. Which of these new patients should we prioritize for follow up based on the results?</p>
+</blockquote>
+<p>Patients in group 2 should be prioritized for follow up appointments since they’re more likely to have a malignant diagnosis.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
